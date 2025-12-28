@@ -6,7 +6,7 @@
 
 **Kinoo TV Extension** to dodatek do przeglądarki Google Chrome, stworzony jako **projekt edukacyjny (Proof of Concept)**. Rozszerza on funkcjonalność serwisu [filman.cc](https://filman.cc), integrując go z chmurą Firebase w celu synchronizacji listy obserwowanych filmów czy seriali.
 
-> **Główny cel:** Rozszerzenie pełni rolę "kompana" dla aplikacji **Kinoo TV na Android TV**. Pozwala wygodnie zarządzać biblioteką filmów na komputerze, aby natychmiast mieć do nich dostęp na dużym ekranie.
+> **Główny cel:** Rozszerzenie pełni rolę "kompana" dla aplikacji **[Kinoo TV](https://github.com/konradcz2001/KinooTV) na Android TV**. Pozwala wygodnie zarządzać biblioteką filmów na komputerze, aby natychmiast mieć do nich dostęp na dużym ekranie.
 
 ## 📱 Ekosystem Kinoo TV
 
@@ -16,7 +16,7 @@ To rozszerzenie ściśle współpracuje z aplikacją na TV. Dzięki wykorzystani
 2. **Kliknij "Obserwuj":** Rozszerzenie wstrzykuje przycisk bezpośrednio na stronę filmu.
 3. **Oglądaj na TV:** Film natychmiast pojawia się w sekcji "Obserwowane" w aplikacji **Kinoo TV** na Twoim telewizorze.
 
-## ✨ Główne Funkcjonalności
+## �?Główne Funkcjonalności
 
 * **DOM Injection:** Automatycznie wstrzykuje przyciski interfejsu (*Obserwuj*, *Lista*) w strukturę strony, używając `MutationObserver` (działa nawet przy dynamicznym ładowaniu treści).
 * **Smart Scraping:** Pobiera metadane filmu (tytuł, rok, ocena, plakat, opis) bezpośrednio ze strony, aby wyświetlić je ładnie w aplikacji TV.
@@ -32,7 +32,7 @@ To rozszerzenie ściśle współpracuje z aplikacją na TV. Dzięki wykorzystani
   <img src="readme_assets/list.png" alt="Lista">
 </div>
 
-## 🛠️ Instalacja (Tryb Deweloperski)
+## 🛠�?Instalacja (Tryb Deweloperski)
 
 Rozszerzenie nie jest dostępne w Chrome Web Store (jest to prywatny projekt edukacyjny). Aby je zainstalować:
 
