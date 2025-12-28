@@ -1,0 +1,113 @@
+.filman-extension-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+}
+.filman-extension-content {
+    background-color: #1a1a1a;
+    width: 90%;
+    max-width: 600px;
+    height: 80vh;
+    border-radius: 8px;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+.filman-extension-header {
+    padding: 15px 20px;
+    background-color: #E50914;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.filman-extension-close {
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+}
+.filman-extension-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+    color: #ddd;
+}
+.filman-section-title {
+    font-size: 18px;
+    color: #E50914;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.filman-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    background-color: #252525;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+.filman-item:hover {
+    background-color: #333;
+}
+.filman-item-img {
+    width: 35px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 3px;
+    margin-right: 12px;
+}
+.filman-item-info {
+    flex-grow: 1;
+    overflow: hidden;
+}
+.filman-item-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #eee;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+.filman-item-title:hover {
+    color: #E50914;
+}
+.filman-item-meta {
+    font-size: 11px;
+    color: #999;
+    margin-top: 3px;
+}
+.filman-delete-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: 5px;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.filman-delete-btn:hover {
+    color: #E50914;
+}

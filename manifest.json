@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Kinoo TV",
+  "version": "1.0",
+  "description": "Synchronizacja obserwowanych filmów i seriali z aplikacją Kinoo TV przez Firebase",
+  "permissions": [
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://filman.cc/*"
+  ],
+  "icons": {
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+		"app_logic.js", 
+		"config.js",
+        "libs/firebase-app.js",
+        "libs/firebase-auth.js",
+        "libs/firebase-database.js"
+		],
+      "matches": ["https://filman.cc/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://filman.cc/m/*", "https://filman.cc/s/*"],
+      "js": ["content_loader.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}
