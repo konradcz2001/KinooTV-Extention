@@ -2,13 +2,12 @@
 console.log("%c--- Kinoo TV EXTENSION: START (V5 - OBSERVER) ---", "background: yellow; color: black; font-size: 14px; font-weight: bold;");
 
 // === LOCAL LIBRARY IMPORTS ===
-// Using local files to comply with Manifest V3 and CSP safety rules
 import { initializeApp } from "./libs/firebase-app.js";
 import { getDatabase, ref, set, remove, onValue } from "./libs/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "./libs/firebase-auth.js";
 
 // === CONFIG IMPORT ===
-import { firebaseConfig, AUTO_LOGIN_EMAIL, AUTO_LOGIN_PASS } from "./config.js";
+import { firebaseConfig, AUTO_LOGIN_EMAIL, AUTO_LOGIN_PASS, YOUTUBE_API_KEY } from "./config.js";
 
 console.log("✅ Firebase libraries loaded from local ./libs/");
 
@@ -32,7 +31,6 @@ let currentUser = null;
 // HELPERS
 // ============================================================
 function encodeUrlToKey(url) {
-    // Encodes URL to a valid Firebase Realtime Database key
     const utf8Bytes = new TextEncoder().encode(url);
     const base64 = btoa(String.fromCharCode(...utf8Bytes));
     return base64
@@ -69,7 +67,6 @@ function scrapeMovieData() {
     const infoLis = document.querySelectorAll('.info ul li');
     infoLis.forEach((li, index) => {
         const text = li.innerText;
-        // Identification based on Polish labels on the website
         if (text.includes("Rok:") || text.includes("Premiera:")) {
             if (infoLis[index + 1]) year = infoLis[index + 1].innerText.trim();
         }
@@ -87,13 +84,46 @@ function scrapeMovieData() {
     return data;
 }
 
+async function getYouTubeTrailerId(query) {
+    console.log(`🔎 API Searching YouTube for: ${query}`);
+    
+    if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === "YOUR_API_KEY_HERE") {
+        console.error("❌ Missing YouTube API Key in config.js!");
+        alert("Configuration Error: Missing YouTube API Key.");
+        return null;
+    }
+
+    try {
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.error) {
+            console.error("❌ YouTube API Error:", data.error.message);
+            return null;
+        }
+
+        if (data.items && data.items.length > 0) {
+            const videoId = data.items[0].id.videoId;
+            console.log(`✅ Found Video ID (API): ${videoId}`);
+            return videoId;
+        } else {
+            console.warn("⚠️ API returned no results.");
+        }
+    } catch (e) {
+        console.error("❌ YouTube fetch error:", e);
+    }
+    return null;
+}
+
 // ============================================================
-// UI: WATCHLIST MODAL
+// UI: MODALS
 // ============================================================
 function createWatchlistModal() {
     console.log("🔘 'Watchlist' button clicked");
     if (!currentUser) {
-        alert("Trwa łączenie z bazą... spróbuj za chwilę."); // UI: "Connecting..."
+        alert("Trwa łączenie z bazą... spróbuj za chwilę.");
         return;
     }
 
@@ -103,7 +133,6 @@ function createWatchlistModal() {
     modal.id = 'filman-watchlist-modal';
     modal.className = 'filman-extension-modal';
     
-    // HTML Structure (UI in Polish)
     modal.innerHTML = `
         <div class="filman-extension-content">
             <div class="filman-extension-header">
@@ -122,7 +151,6 @@ function createWatchlistModal() {
     modal.querySelector('.filman-extension-close').onclick = close;
     modal.onclick = (e) => { if (e.target === modal) close(); };
 
-    // Fetching data from user's node
     console.log(`📡 Fetching list from DB...`);
     const dbRef = ref(db, `watchlist/${currentUser.uid}`);
     
@@ -171,7 +199,6 @@ function createWatchlistModal() {
         }
         container.innerHTML = html;
 
-        // Attach delete handlers
         document.querySelectorAll('.filman-delete-btn').forEach(btn => {
             btn.onclick = (e) => {
                 const key = e.currentTarget.getAttribute('data-key');
@@ -185,22 +212,51 @@ function createWatchlistModal() {
     });
 }
 
+function createTrailerModal(videoId) {
+    if (document.getElementById('filman-trailer-modal')) return;
+
+    const modal = document.createElement('div');
+    modal.id = 'filman-trailer-modal';
+    modal.className = 'filman-extension-modal';
+    
+    modal.innerHTML = `
+        <div class="filman-extension-content" style="max-width: 800px; height: auto;">
+            <div class="filman-extension-header">
+                <span>ZWIASTUN</span>
+                <span class="filman-extension-close">&times;</span>
+            </div>
+            <div class="filman-player-container">
+                <iframe 
+                    src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+
+    const close = () => document.body.removeChild(modal);
+    modal.querySelector('.filman-extension-close').onclick = close;
+    modal.onclick = (e) => { if (e.target === modal) close(); };
+}
+
 // ============================================================
 // DOM INJECTION LOGIC
 // ============================================================
 function injectButtons() {
-    // Check if buttons already exist to prevent duplicates
     if (document.getElementById('filman-extension-container')) {
         return;
     }
     
     console.log("💉 Starting injectButtons()...");
 
-    // Finding the injection target (Header or Description)
     const allHeaders = document.querySelectorAll('#item-info h4');
     let targetHeader = null;
     
-    // 1. Look for specific Polish headers
     for (const h of allHeaders) {
         if (h.innerText.trim() === "Opis" || h.innerText.trim() === "Streszczenie") { 
             targetHeader = h; 
@@ -208,7 +264,6 @@ function injectButtons() {
             break; 
         }
     }
-    // 2. Fallback to description class
     if (!targetHeader) {
         const descP = document.querySelector('.description');
         if (descP) {
@@ -216,7 +271,6 @@ function injectButtons() {
             console.log("✅ Found .description element");
         }
     }
-    // 3. Fallback to main container
     if (!targetHeader) {
         targetHeader = document.querySelector('#item-info');
         if(targetHeader) console.log("✅ Found #item-info container");
@@ -229,44 +283,62 @@ function injectButtons() {
 
     const btnContainer = document.createElement('div');
     btnContainer.id = 'filman-extension-container';
-    btnContainer.style.marginBottom = "20px";
 
     // --- BUTTON 1: TOGGLE WATCH ---
     const mainBtn = document.createElement('button');
-    mainBtn.style.display = "block";
-    mainBtn.style.width = "100%";
-    mainBtn.style.padding = "12px";
-    mainBtn.style.marginBottom = "10px";
-    mainBtn.style.border = "none";
-    mainBtn.style.borderRadius = "4px";
-    mainBtn.style.fontWeight = "bold";
-    mainBtn.style.cursor = "pointer";
-    mainBtn.style.fontSize = "16px";
-    mainBtn.style.color = "white";
-    mainBtn.style.transition = "all 0.3s";
+    mainBtn.className = 'filman-btn filman-btn-grey';
 
     // --- BUTTON 2: SHOW LIST ---
     const listBtn = document.createElement('button');
-    listBtn.innerText = "LISTA OBSERWOWANYCH"; // UI: "Watchlist"
-    listBtn.style.display = "block";
-    listBtn.style.width = "100%";
-    listBtn.style.padding = "12px";
-    listBtn.style.border = "1px solid #666";
-    listBtn.style.borderRadius = "4px";
-    listBtn.style.fontWeight = "bold";
-    listBtn.style.cursor = "pointer";
-    listBtn.style.fontSize = "16px";
-    listBtn.style.color = "white";
-    listBtn.style.backgroundColor = "#333333";
-    
-    listBtn.onmouseover = () => listBtn.style.backgroundColor = "#666666";
-    listBtn.onmouseout = () => listBtn.style.backgroundColor = "#333333";
+    listBtn.innerText = "LISTA OBSERWOWANYCH";
+    listBtn.className = 'filman-btn filman-btn-grey';
     listBtn.onclick = createWatchlistModal;
+
+    // --- BUTTON 3: YOUTUBE ---
+    const ytBtn = document.createElement('button');
+    ytBtn.id = 'filman-yt-btn';
+    ytBtn.className = 'filman-btn filman-btn-grey';
+    ytBtn.innerHTML = `
+        <span style="display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="white" style="margin-right: 8px;"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+            YOUTUBE
+        </span>
+    `;
+    
+    ytBtn.onclick = async () => {
+        if (ytBtn.disabled) return;
+        
+        const originalText = ytBtn.innerHTML;
+        ytBtn.innerText = "SZUKANIE...";
+        ytBtn.disabled = true;
+
+        const data = scrapeMovieData();
+        const rawTitle = data.title;
+        
+        const slashCount = (rawTitle.match(/\//g) || []).length;
+        let queryTitle = rawTitle.trim();
+        if (slashCount === 1) {
+            queryTitle = rawTitle.split('/')[1].trim();
+        }
+        
+        const query = `${queryTitle} trailer ${data.year}`;
+        
+        const videoId = await getYouTubeTrailerId(query);
+        
+        ytBtn.innerHTML = originalText;
+        ytBtn.disabled = false;
+
+        if (videoId) {
+            createTrailerModal(videoId);
+        } else {
+            alert("Nie znaleziono zwiastuna.");
+        }
+    };
 
     btnContainer.appendChild(mainBtn);
     btnContainer.appendChild(listBtn);
+    btnContainer.appendChild(ytBtn);
 
-    // Inject into DOM
     if (targetHeader.id === 'item-info') {
         targetHeader.prepend(btnContainer);
     } else {
@@ -278,7 +350,6 @@ function injectButtons() {
     if (!currentUser) {
         console.log("🔒 State: Not logged in. Button disabled.");
         mainBtn.innerText = "Łączenie z bazą...";
-        mainBtn.style.backgroundColor = "#555";
         mainBtn.disabled = true;
     } else {
         console.log("🔓 State: Logged in. Checking if movie is watched...");
@@ -288,25 +359,17 @@ function injectButtons() {
         const dbRef = ref(db, `watchlist/${currentUser.uid}/${movieKey}`);
 
         const setUnwatchedStyle = () => {
-            mainBtn.innerText = "OBSERWUJ"; // UI: "Watch"
-            mainBtn.style.backgroundColor = "#333333";
-            mainBtn.style.border = "1px solid #666";
-            mainBtn.onmouseover = () => mainBtn.style.backgroundColor = "#666666";
-            mainBtn.onmouseout = () => mainBtn.style.backgroundColor = "#333333";
+            mainBtn.innerText = "OBSERWUJ";
+            mainBtn.className = 'filman-btn filman-btn-grey';
         };
 
         const setWatchedStyle = () => {
-            mainBtn.innerText = "OBSERWUJĘ"; // UI: "Watching"
-            mainBtn.style.backgroundColor = "#E50914";
-            mainBtn.style.border = "1px solid #E50914";
-            mainBtn.onmouseover = () => mainBtn.style.backgroundColor = "#99070D";
-            mainBtn.onmouseout = () => mainBtn.style.backgroundColor = "#E50914";
+            mainBtn.innerText = "OBSERWUJĘ";
+            mainBtn.className = 'filman-btn filman-btn-red';
         };
 
-        // Default state
         setUnwatchedStyle();
 
-        // Listen for database changes
         onValue(dbRef, (snapshot) => {
             if (snapshot.exists()) {
                 setWatchedStyle();
@@ -315,7 +378,6 @@ function injectButtons() {
             }
         });
 
-        // Toggle action
         mainBtn.onclick = () => {
             console.log("🔘 WATCH/UNWATCH clicked");
             onValue(dbRef, (snapshot) => {
@@ -341,7 +403,6 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("✅✅✅ AUTO-LOGIN SUCCESS! Logged as:", user.email);
         currentUser = user;
-        // Trigger injection in case observer hasn't caught it yet
         injectButtons();
         startObservers();
     } else {
@@ -357,9 +418,7 @@ onAuthStateChanged(auth, (user) => {
 function startObservers() {
     console.log("👀 Starting DOM Observers...");
     
-    // Observer: Watches for changes in the DOM body (e.g., dynamic content loading)
     const bodyObserver = new MutationObserver((mutations) => {
-        // If buttons don't exist, try to inject them
         if (!document.getElementById('filman-extension-container')) {
             injectButtons();
         }
@@ -367,6 +426,5 @@ function startObservers() {
 
     bodyObserver.observe(document.body, { childList: true, subtree: true });
 
-    // Initial check just in case document is already ready
     injectButtons();
 }
