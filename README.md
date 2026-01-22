@@ -27,10 +27,16 @@ To rozszerzenie ściśle współpracuje z aplikacją na TV. Dzięki wykorzystani
 
 ## 📸 Screenshots
 
-![Przyciski](readme_assets/buttons.png)
+<div align="center">
+  <img src="readme_assets/buttons.png" alt="Przyciski">
+</div>
 
 <div align="center">
   <img src="readme_assets/list.png" alt="Lista">
+</div>
+
+<div align="center">
+  <img src="readme_assets/youtube.png" alt="YouTube">
 </div>
 
 ## 🛠︿Instalacja (Tryb Deweloperski)
