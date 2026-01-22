@@ -7,7 +7,8 @@
     "activeTab"
   ],
   "host_permissions": [
-    "https://filman.cc/*"
+    "https://filman.cc/*",
+    "https://www.googleapis.com/*"
   ],
   "icons": {
     "48": "icon.png",

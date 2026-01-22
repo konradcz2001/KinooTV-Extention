@@ -111,3 +111,66 @@
 .filman-delete-btn:hover {
     color: #E50914;
 }
+
+#filman-extension-container {
+    margin-bottom: 20px;
+}
+
+.filman-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ffffff !important;
+    transition: all 0.3s;
+    text-align: center;
+    border: none;
+}
+
+.filman-btn svg {
+    vertical-align: middle;
+}
+
+.filman-btn-grey {
+    background-color: #333333;
+    border: 1px solid #666;
+}
+
+.filman-btn-grey:hover {
+    background-color: #666666;
+}
+
+.filman-btn-red {
+    background-color: #E50914;
+    border: 1px solid #E50914;
+}
+
+.filman-btn-red:hover {
+    background-color: #99070D;
+}
+
+.filman-btn:disabled {
+    background-color: #555;
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.filman-player-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    background-color: black;
+    height: 0;
+}
+
+.filman-player-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}

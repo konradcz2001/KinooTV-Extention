@@ -20,6 +20,7 @@ To rozszerzenie ściśle współpracuje z aplikacją na TV. Dzięki wykorzystani
 
 * **DOM Injection:** Automatycznie wstrzykuje przyciski interfejsu (*Obserwuj*, *Lista*) w strukturę strony, używając `MutationObserver` (działa nawet przy dynamicznym ładowaniu treści).
 * **Smart Scraping:** Pobiera metadane filmu (tytuł, rok, ocena, plakat, opis) bezpośrednio ze strony, aby wyświetlić je ładnie w aplikacji TV.
+* **Integracja z YouTube:** Wyszukuje i odtwarza zwiastun filmu bezpośrednio w oknie pop-up, wykorzystując **YouTube Data API v3**. Inteligentnie dobiera tytuł (pomijając polskie tłumaczenia) dla lepszych wyników.
 * **Status Oglądania:** Przycisk zmienia kolor i status (*Obserwuj* / *Obserwuję*) w zależności od tego, czy film jest już w Twojej bazie.
 * **Bezpieczna Architektura:** Wykorzystuje lokalne biblioteki Firebase (zgodność z CSP i Manifest V3) oraz izolowany kontekst skryptów dla bezpieczeństwa kluczy API.
 * **Podgląd Listy:** Wbudowany modal pozwala podejrzeć i zarządzać swoją listą obserwowanych bez wychodzenia ze strony filmu.
@@ -53,10 +54,10 @@ Ze względów bezpieczeństwa plik z kluczami API nie jest dołączony do repozy
 ```javascript
 export const firebaseConfig = {
     apiKey: "TWOJE_API_KEY",
-    authDomain: "twoj-projekt.firebaseapp.com",
-    databaseURL: "[https://twoj-projekt-default-rtdb.europe-west1.firebasedatabase.app](https://twoj-projekt-default-rtdb.europe-west1.firebasedatabase.app)",
-    projectId: "twoj-projekt",
-    storageBucket: "twoj-projekt.appspot.com",
+    authDomain: "TWÓJ_PROJEKT.firebaseapp.com",
+    databaseURL: "LINK_DO_BAZY_DANYCH" (np. "https://TWÓJ_PROJEKT-default-rtdb.europe-west1.firebasedatabase.app"),
+    projectId: "TWÓJ_PROJEKT",
+    storageBucket: "TWÓJ_PROJEKT.appspot.com",
     messagingSenderId: "NUMER",
     appId: "APP_ID",
     measurementId: "G-XXXXXX"
@@ -64,6 +65,8 @@ export const firebaseConfig = {
 
 export const AUTO_LOGIN_EMAIL = "twoj_email@example.com";
 export const AUTO_LOGIN_PASS = "twoje_haslo";
+
+export const YOUTUBE_API_KEY = "TWOJE_YT_API_KEY";
 ```
 
 ## 📄 Licencja
