@@ -4,77 +4,77 @@
 ![Chrome](https://img.shields.io/badge/Chrome-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)
 ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
 
-**Kinoo TV Extension** to dodatek do przeglądarki Google Chrome, stworzony jako **projekt edukacyjny (Proof of Concept)**. Rozszerza on funkcjonalność serwisu [filman.cc](https://filman.cc), integrując go z chmurą Firebase w celu synchronizacji listy obserwowanych filmów czy seriali.
+**Kinoo TV Extension** is a Google Chrome add-on created as an **educational project (Proof of Concept)**. It extends the functionality of the [filman.cc](https://filman.cc) service by integrating it with Firebase cloud for watchlist synchronization.
 
-> **Główny cel:** Rozszerzenie pełni rolę "kompana" dla aplikacji **[Kinoo TV](https://github.com/konradcz2001/KinooTV) na Android TV**. Pozwala wygodnie zarządzać biblioteką filmów na komputerze, aby natychmiast mieć do nich dostęp na dużym ekranie.
+> **Main Purpose:** This extension acts as a "companion" for the **[Kinoo TV](https://github.com/konradcz2001/KinooTV) Android TV app**. It allows you to conveniently manage your movie library on your computer and access it instantly on the big screen.
 
-## 📱 Ekosystem Kinoo TV
+## 📱 Kinoo TV Ecosystem
 
-To rozszerzenie ściśle współpracuje z aplikacją na TV. Dzięki wykorzystaniu wspólnej bazy danych **Firebase Realtime Database**, synchronizacja odbywa się w czasie rzeczywistym.
+This extension works closely with the TV application. By using a shared **Firebase Realtime Database**, synchronization happens in real-time.
 
-1. **Znajdź na PC:** Przeglądasz serwis na komputerze i znajdujesz ciekawy film.
-2. **Kliknij "Obserwuj":** Rozszerzenie wstrzykuje przycisk bezpośrednio na stronę filmu.
-3. **Oglądaj na TV:** Film natychmiast pojawia się w sekcji "Obserwowane" w aplikacji **Kinoo TV** na Twoim telewizorze.
+1. **Find on PC:** Browse the service on your computer and find an interesting movie.
+2. **Click "Watchlist":** The extension injects a button directly onto the movie page.
+3. **Watch on TV:** The movie immediately appears in the "Watchlist" section of the **Kinoo TV** app on your television.
 
-## ✿Główne Funkcjonalności
+## ✨ Key Features
 
-* **DOM Injection:** Automatycznie wstrzykuje przyciski interfejsu (*Obserwuj*, *Lista*) w strukturę strony, używając `MutationObserver` (działa nawet przy dynamicznym ładowaniu treści).
-* **Smart Scraping:** Pobiera metadane filmu (tytuł, rok, ocena, plakat, opis) bezpośrednio ze strony, aby wyświetlić je ładnie w aplikacji TV.
-* **Integracja z YouTube:** Wyszukuje i odtwarza zwiastun filmu bezpośrednio w oknie pop-up, wykorzystując **YouTube Data API v3**. Inteligentnie dobiera tytuł (pomijając polskie tłumaczenia) dla lepszych wyników.
-* **Status Oglądania:** Przycisk zmienia kolor i status (*Obserwuj* / *Obserwuję*) w zależności od tego, czy film jest już w Twojej bazie.
-* **Bezpieczna Architektura:** Wykorzystuje lokalne biblioteki Firebase (zgodność z CSP i Manifest V3) oraz izolowany kontekst skryptów dla bezpieczeństwa kluczy API.
-* **Podgląd Listy:** Wbudowany modal pozwala podejrzeć i zarządzać swoją listą obserwowanych bez wychodzenia ze strony filmu.
+* **DOM Injection:** Automatically injects UI buttons (*Watchlist*, *List*) into the page structure using `MutationObserver` (works even with dynamically loaded content).
+* **Smart Scraping:** Extracts movie metadata (title, year, rating, poster, description) directly from the page to display it beautifully in the TV app.
+* **YouTube Integration:** Searches for and plays movie trailers directly in a pop-up window using the **YouTube Data API v3**. It intelligently selects the title (omitting Polish translations) for better search results.
+* **Watch Status:** The button changes color and status (*Watchlist* / *Watching*) depending on whether the movie is already in your database.
+* **Secure Architecture:** Uses local Firebase libraries (Manifest V3 and CSP compliant) and an isolated script context to protect API keys.
+* **List Preview:** A built-in modal allows you to view and manage your watchlist without leaving the movie page.
 
 ## 📸 Screenshots
 
 <div align="center">
-  <img src="readme_assets/buttons.png" alt="Przyciski">
+  <img src="readme_assets/buttons.png" alt="Buttons">
 </div>
 
 <div align="center">
-  <img src="readme_assets/list.png" alt="Lista">
+  <img src="readme_assets/list.png" alt="List">
 </div>
 
 <div align="center">
   <img src="readme_assets/youtube.png" alt="YouTube">
 </div>
 
-## 🛠︿Instalacja (Tryb Deweloperski)
+## 🛠️ Installation (Developer Mode)
 
-Rozszerzenie nie jest dostępne w Chrome Web Store (jest to prywatny projekt edukacyjny). Aby je zainstalować:
+The extension is not available in the Chrome Web Store (it is a private educational project). To install it:
 
-1. **Sklonuj repozytorium**
-2. **Skonfiguruj środowisko:**
-   * Upewnij się, że w folderze `libs/` znajdują się pliki: `firebase-app.js`, `firebase-auth.js`, `firebase-database.js`.
-   * Utwórz plik `config.js` w głównym katalogu (patrz sekcja Konfiguracja).
-3. **Załaduj do Chrome:**
-   * Otwórz przeglądarkę i wpisz w pasek adresu: `chrome://extensions`.
-   * Włącz **Tryb dewelopera** (prawy górny róg).
-   * Kliknij **Załaduj rozpakowane** (Load unpacked).
-   * Wskaż folder z pobranym projektem.
+1. **Clone the repository**
+2. **Configure the environment:**
+   * Ensure the `libs/` folder contains: `firebase-app.js`, `firebase-auth.js`, `firebase-database.js`.
+   * Create a `config.js` file in the root directory (see Configuration section).
+3. **Load into Chrome:**
+   * Open your browser and navigate to: `chrome://extensions`.
+   * Enable **Developer mode** (top right corner).
+   * Click **Load unpacked**.
+   * Select the folder containing the downloaded project.
 
-## ⚙️ Konfiguracja
+## ⚙️ Configuration
 
-Ze względów bezpieczeństwa plik z kluczami API nie jest dołączony do repozytorium. Utwórz plik `config.js` w głównym katalogu projektu:
+For security reasons, the file containing API keys is not included in the repository. Create a `config.js` file in the project's root directory:
 
 ```javascript
 export const firebaseConfig = {
-    apiKey: "TWOJE_API_KEY",
-    authDomain: "TWÓJ_PROJEKT.firebaseapp.com",
-    databaseURL: "LINK_DO_BAZY_DANYCH" (np. "https://TWÓJ_PROJEKT-default-rtdb.europe-west1.firebasedatabase.app"),
-    projectId: "TWÓJ_PROJEKT",
-    storageBucket: "TWÓJ_PROJEKT.appspot.com",
-    messagingSenderId: "NUMER",
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "DATABASE_URL" (e.g., "https://YOUR_PROJECT-default-rtdb.europe-west1.firebasedatabase.app"),
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "SENDER_ID",
     appId: "APP_ID",
     measurementId: "G-XXXXXX"
 };
 
-export const AUTO_LOGIN_EMAIL = "twoj_email@example.com";
-export const AUTO_LOGIN_PASS = "twoje_haslo";
+export const AUTO_LOGIN_EMAIL = "your_email@example.com";
+export const AUTO_LOGIN_PASS = "your_password";
 
-export const YOUTUBE_API_KEY = "TWOJE_YT_API_KEY";
+export const YOUTUBE_API_KEY = "YOUR_YT_API_KEY";
 ```
 
-## 📄 Licencja
+## 📄 License
 
-Ten projekt jest udostępniony na licencji MIT - zobacz plik [LICENSE](LICENSE) po więcej szczegółów.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
